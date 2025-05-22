@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -69,7 +69,7 @@ export default function LoginPage() {
         setError(true);
         form.setError("root", {
           type: "manual",
-          message: "Invalid email or password",
+          message: result?.error,
         });
       } else {
         router.push("/dashboard");
@@ -125,6 +125,7 @@ export default function LoginPage() {
             alt="NovaDash Logo"
             width={240}
             height={100}
+            className="w-auto h-auto"
           />
         </motion.div>
         <motion.h1

@@ -65,19 +65,21 @@ export const authOptions: AuthOptions = {
             token: userCredentials.token,
           };
         } catch (error: any) {
-          console.error("Erreur d'authentification:", error);
+          const errorMessage =
+            error.response?.data?.message ||
+            error.message ||
+            "Une erreur est survenue lors de la connexion";
 
-          if (error.response?.status === 401) {
-            throw new Error("Email ou mot de passe incorrect");
+          if (process.env.NODE_ENV === "development") {
+            console.error("Erreur de connexion:", {
+              message: errorMessage,
+              status: error.response?.status,
+              data: error.response?.data,
+              error: error,
+            });
           }
 
-          if (error.response?.status === 404) {
-            throw new Error("Service d'authentification non disponible");
-          }
-
-          throw new Error(
-            error.response?.data?.message || "Erreur lors de la connexion"
-          );
+          throw new Error(errorMessage);
         }
       },
     }),
