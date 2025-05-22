@@ -5,7 +5,6 @@ interface DashboardHeaderProps {
 }
 
 export function DashboardHeader({ currentPath }: DashboardHeaderProps) {
-  // Format the current path for display
   const formatPathName = (path: string) => {
     return path.charAt(0).toUpperCase() + path.slice(1);
   };

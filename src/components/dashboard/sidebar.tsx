@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
@@ -17,14 +17,23 @@ import {
   ShoppingCart,
   File,
   HeartHandshake,
+  LogOut,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { signOut } from "next-auth/react";
+import api from "@/lib/axios";
+import { useUserStore } from "@/store/user-store";
 
 export function DashboardSidebar() {
   const pathname = usePathname();
+  const user = useUserStore((state) => state.user);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+
+  useEffect(() => {
+    console.log("User", useUserStore.getState().user);
+  }, [user]);
 
   const navigation = [
     { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -176,9 +185,35 @@ export function DashboardSidebar() {
           <div className="flex-shrink-0 flex border-t border-gray-200 p-4">
             <div className="flex items-center">
               <div className="size-8 rounded-full bg-gray-200" />
-              <div className="ml-3">
-                <p className="text-sm font-medium">Admin User</p>
-                <p className="text-xs text-gray-500">admin@example.com</p>
+              <div className="flex items-center justify-between w-full gap-2">
+                <div className="ml-3">
+                  <p className="text-sm font-medium">
+                    {user?.username} {user?.lastName[0]}.
+                  </p>
+                  <p className="text-xs text-gray-500">{user?.email}</p>
+                </div>
+                <div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="bg-white hover:bg-red-500 group cursor-pointer hover:text-white transition-colors duration-300"
+                    onClick={async () => {
+                      try {
+                        await api.post("/api/v1/auth/logout");
+
+                        await signOut({
+                          redirect: true,
+                          callbackUrl: "/login",
+                        });
+                      } catch (error) {
+                        console.error("Erreur lors de la déconnexion:", error);
+                      }
+                    }}
+                  >
+                    <LogOut className="size-4 text-red-500 group-hover:text-white transition-colors duration-300" />
+                    <span className="sr-only">Déconnexion</span>
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
