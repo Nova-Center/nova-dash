@@ -11,8 +11,35 @@ import { StoreProvider } from "@/store/store-provider";
 import ProtectedRoute from "@/components/auth/protected-route";
 import { SessionProvider } from "next-auth/react";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import {
+  LayoutDashboard,
+  Users,
+  AlertTriangle,
+  Coins,
+  Calendar,
+  ShoppingCart,
+  HeartHandshake,
+  File,
+  Settings,
+} from "lucide-react";
 
 const queryClient = new QueryClient();
+
+const navigation = [
+  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+  { name: "Utilisateurs", href: "/dashboard/users", icon: Users },
+  {
+    name: "Signalements",
+    href: "/dashboard/reports",
+    icon: AlertTriangle,
+  },
+  { name: "NovaPoints", href: "/dashboard/points", icon: Coins },
+  { name: "Évènements", href: "/dashboard/events", icon: Calendar },
+  { name: "Boutique", href: "/dashboard/shop", icon: ShoppingCart },
+  { name: "Services", href: "/dashboard/services", icon: HeartHandshake },
+  { name: "Posts", href: "/dashboard/posts", icon: File },
+  { name: "Paramètres", href: "/dashboard/settings", icon: Settings },
+];
 
 export default function DashboardLayout({
   children,
@@ -20,7 +47,6 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }>) {
   const pathname = usePathname();
-  const currentPath = pathname.split("/").pop() || "overview";
 
   return (
     <SessionProvider>
@@ -28,9 +54,14 @@ export default function DashboardLayout({
         <StoreProvider>
           <QueryClientProvider client={queryClient}>
             <div className="min-h-screen bg-[#FEF0ED]">
-              <DashboardSidebar />
+              <DashboardSidebar navigation={navigation} />
               <div className="flex flex-col md:pl-64">
-                <DashboardHeader currentPath={currentPath} />
+                <DashboardHeader
+                  currentPath={
+                    navigation.find((item) => item.href === pathname)?.name ||
+                    "Dashboard"
+                  }
+                />
                 <main className="flex-1 p-6 relative">{children}</main>
               </div>
               <Toaster />

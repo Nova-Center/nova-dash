@@ -13,6 +13,11 @@ interface Meta {
   lastPageUrl: string;
   nextPageUrl: string | null;
   previousPageUrl: string | null;
+  usersByRole?: {
+    superadmin: number;
+    admin: number;
+    user: number;
+  };
 }
 
 interface ApiResponse {
@@ -27,9 +32,18 @@ interface UsersStore {
   isLoading: boolean;
   error: string | null;
   searchQuery: string;
+  stats: {
+    totalUsers: number;
+    usersByRole: {
+      superadmin: number;
+      admin: number;
+      user: number;
+    };
+  } | null;
   setSearchQuery: (query: string) => void;
   setSelectedUser: (user: User | null) => void;
   fetchUsers: () => Promise<ApiResponse>;
+  fetchUserStats: () => Promise<void>;
   banUser: (userId: number, reason: string) => Promise<void>;
   unbanUser: (userId: number) => Promise<void>;
   updateUser: (userId: number, data: Partial<User>) => Promise<void>;
@@ -43,9 +57,23 @@ export const useUsersStore = create<UsersStore>((set, get) => ({
   isLoading: false,
   error: null,
   searchQuery: "",
+  stats: null,
 
   setSearchQuery: (query) => set({ searchQuery: query }),
   setSelectedUser: (user) => set({ selectedUser: user }),
+
+  fetchUserStats: async () => {
+    try {
+      const response = await api.get("/api/v1/users/stats");
+      set({ stats: response.data });
+      return response.data;
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to fetch user stats";
+      set({ error: errorMessage });
+      throw error;
+    }
+  },
 
   fetchUsers: async () => {
     set({ isLoading: true, error: null });

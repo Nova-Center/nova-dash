@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
@@ -12,41 +11,25 @@ import {
   Settings,
   AlertTriangle,
   Coins,
-  Menu,
-  X,
   ShoppingCart,
   File,
   HeartHandshake,
   LogOut,
-  Shield,
-  ShieldUser,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { signOut } from "next-auth/react";
 import api from "@/lib/axios";
 import { useUserStore } from "@/store/user-store";
 import BadgeRole from "@/components/dashboard/badge-role";
+import { NavigationItem } from "@/types/navigation.interface";
 
-export function DashboardSidebar() {
+export function DashboardSidebar({
+  navigation,
+}: {
+  navigation: NavigationItem[];
+}) {
   const pathname = usePathname();
   const user = useUserStore((state) => state.user);
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
-
-  const navigation = [
-    { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-    { name: "Utilisateurs", href: "/dashboard/users", icon: Users },
-    {
-      name: "Signalements",
-      href: "/dashboard/reports",
-      icon: AlertTriangle,
-    },
-    { name: "NovaPoints", href: "/dashboard/points", icon: Coins },
-    { name: "Évènements", href: "/dashboard/events", icon: Calendar },
-    { name: "Boutique", href: "/dashboard/shop", icon: ShoppingCart },
-    { name: "Services", href: "/dashboard/services", icon: HeartHandshake },
-    { name: "Posts", href: "/dashboard/posts", icon: File },
-    { name: "Paramètres", href: "/dashboard/settings", icon: Settings },
-  ];
 
   // Animation variants
   const sidebarVariants = {

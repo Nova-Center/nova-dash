@@ -22,7 +22,7 @@ export default function ProtectedRoute({
 
     if (status === "authenticated") {
       const getUser = async () => {
-        const res = await api.get("/api/v1/users/me");
+        const res = await api.get("/api/v1/me");
         setUser(res.data);
       };
       getUser();

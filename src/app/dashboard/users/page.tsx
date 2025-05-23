@@ -35,6 +35,10 @@ import {
   Coins,
   FileCheck,
   Trash,
+  Users,
+  Shield,
+  User as UserIcon,
+  ShieldUser,
 } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
@@ -69,10 +73,12 @@ export default function UsersPage() {
     setSearchQuery,
     setSelectedUser,
     fetchUsers,
+    fetchUserStats,
     banUser,
     unbanUser,
     updateUser,
     deleteUser,
+    stats,
   } = useUsersStore();
 
   const { isLoading, error } = useQuery({
@@ -80,6 +86,13 @@ export default function UsersPage() {
     queryFn: fetchUsers,
     retry: 1,
   });
+
+  useQuery({
+    queryKey: ["userStats"],
+    queryFn: fetchUserStats,
+    retry: 1,
+  });
+
   const [ban, setBan] = useState({
     isOpen: false,
     user: null as User | null,
@@ -215,15 +228,74 @@ export default function UsersPage() {
   }
 
   return (
-    <div className="container mx-auto py-8 h-full">
+    <div className="container mx-auto h-full">
+      <div className="flex flex-col gap-2 my-4">
+        <h1 className="text-2xl font-bold">Gestion des Utilisateurs</h1>
+        <p className="text-sm text-gray-500">
+          Gérez les utilisateurs de votre plateforme
+        </p>
+      </div>
       <Card>
         <CardHeader>
-          <CardTitle>Gestion des Utilisateurs</CardTitle>
+          <CardTitle>Statistiques des Utilisateurs</CardTitle>
           <CardDescription>
-            Gérez les utilisateurs de votre plateforme
+            Statistiques des utilisateurs de votre plateforme, en fonction des
+            rôles.
           </CardDescription>
         </CardHeader>
         <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <Card className="bg-gradient-to-br bg-blue-600 text-white">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Total Utilisateurs
+                </CardTitle>
+                <Users className="h-4 w-4" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {stats?.totalUsers || 0}
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="bg-gradient-to-br bg-nova-secondary text-white">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Superadmins
+                </CardTitle>
+                <ShieldUser className="h-4 w-4" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {stats?.usersByRole?.superadmin || 0}
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="bg-gradient-to-br bg-yellow-500 text-white">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Admins</CardTitle>
+                <Shield className="h-4 w-4" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {stats?.usersByRole?.admin || 0}
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="bg-gradient-to-br bg-gray-500 text-white">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Utilisateurs
+                </CardTitle>
+                <UserIcon className="h-4 w-4" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {stats?.usersByRole?.user || 0}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
           <div className="flex items-center space-x-4 mb-6">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
