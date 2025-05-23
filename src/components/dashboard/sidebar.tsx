@@ -22,12 +22,10 @@ import {
   ShieldUser,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { signOut } from "next-auth/react";
 import api from "@/lib/axios";
 import { useUserStore } from "@/store/user-store";
-import { Badge } from "../ui/badge";
+import BadgeRole from "@/components/dashboard/badge-role";
 
 export function DashboardSidebar() {
   const pathname = usePathname();
@@ -129,24 +127,15 @@ export function DashboardSidebar() {
                 <Image
                   src={
                     user?.avatar ||
-                    `https://api.dicebear.com/9.x/adventurer-neutral/svg?seed=Felix`
+                    `https://api.dicebear.com/9.x/adventurer-neutral/svg?seed=${user?.username}`
                   }
                   alt="Avatar"
                   width={80}
                   height={80}
-                  className="rounded-full size-10"
+                  className="rounded-full size-10 border border-gray-200"
                 />
                 <div className="ml-3 flex flex-col gap-1">
-                  <Badge
-                    variant="destructive"
-                    className="bg-secondary text-white text-[10px]"
-                  >
-                    {user?.role === "admin" && <Shield className="size-4" />}
-                    {user?.role === "superadmin" && (
-                      <ShieldUser className="size-4" />
-                    )}
-                    {user?.role.toUpperCase()}
-                  </Badge>
+                  <BadgeRole role={user?.role} />
                   <p className="text-xs text-gray-500">{user?.username}</p>
                 </div>
               </div>
@@ -154,7 +143,7 @@ export function DashboardSidebar() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="bg-white hover:bg-secondary group cursor-pointer hover:text-white transition-colors duration-300"
+                  className="bg-white hover:bg-nova-secondary group cursor-pointer hover:text-white transition-colors duration-300"
                   onClick={async () => {
                     try {
                       await api.post("/api/v1/auth/logout");
@@ -168,7 +157,7 @@ export function DashboardSidebar() {
                     }
                   }}
                 >
-                  <LogOut className="size-4 text-secondary group-hover:text-white transition-colors duration-300" />
+                  <LogOut className="size-4 text-nova-secondary group-hover:text-white transition-colors duration-300" />
                   <span className="sr-only">Déconnexion</span>
                 </Button>
               </div>

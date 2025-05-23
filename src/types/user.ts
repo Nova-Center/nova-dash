@@ -1,6 +1,6 @@
 export type Role = "superadmin" | "admin" | "user";
 
-export type User = {
+export interface User {
   id: number;
   username: string;
   firstName: string;
@@ -12,4 +12,6 @@ export type User = {
   avatar: string | null;
   novaPoints: number;
   role: Role;
-};
+  isBanned: boolean;
+  banReason: string | null;
+}

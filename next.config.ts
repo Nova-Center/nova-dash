@@ -9,6 +9,11 @@ const nextConfig: NextConfig = {
         protocol: "https",
         pathname: "/9.x/adventurer-neutral/svg",
       },
+      {
+        hostname: "localhost",
+        protocol: "http",
+        port: "9000",
+      },
     ],
   },
 };

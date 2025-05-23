@@ -10,6 +10,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StoreProvider } from "@/store/store-provider";
 import ProtectedRoute from "@/components/auth/protected-route";
 import { SessionProvider } from "next-auth/react";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const queryClient = new QueryClient();
 
@@ -30,10 +31,11 @@ export default function DashboardLayout({
               <DashboardSidebar />
               <div className="flex flex-col md:pl-64">
                 <DashboardHeader currentPath={currentPath} />
-                <main className="flex-1 p-6">{children}</main>
+                <main className="flex-1 p-6 relative">{children}</main>
               </div>
               <Toaster />
             </div>
+            <ReactQueryDevtools initialIsOpen={false} />
           </QueryClientProvider>
         </StoreProvider>
       </ProtectedRoute>
