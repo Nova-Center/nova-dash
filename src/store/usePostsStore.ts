@@ -81,23 +81,12 @@ export const usePostsStore = create<PostsState>((set, get) => ({
   setSelectedPost: (post) => set({ selectedPost: post }),
   fetchPosts: async (page = 1) => {
     try {
-      console.log("Fetching posts with page:", page);
       const response = await api.get<{ data: Post[]; meta: Meta }>(
         `/api/v1/posts?page=${page}&include=user,comments.user,likes.user`
       );
-      console.log("API Response:", response.data);
 
-      // Vérifier la structure des données
-      const posts = response.data.data.map((post) => {
-        console.log("Post data:", post);
-        console.log("Post user:", post.user);
-        console.log("Post comments:", post.comments);
-        console.log("Post likes:", post.likes);
-        return post;
-      });
-
-      set({ posts, meta: response.data.meta, error: null });
-      return posts;
+      set({ posts: response.data.data, meta: response.data.meta, error: null });
+      return response.data.data;
     } catch (error) {
       console.error("Error fetching posts:", error);
       const errorMessage =
@@ -155,15 +144,15 @@ export const usePostsStore = create<PostsState>((set, get) => ({
       throw error;
     }
   },
-  deleteLike: async (postId, likeId) => {
+  deleteLike: async (postId, userId) => {
     try {
-      await api.delete(`/api/v1/posts/${postId}/likes/${likeId}`);
+      await api.post(`/api/v1/posts/${postId}/unlike/${userId}`);
       set((state) => ({
         posts: state.posts.map((post) =>
           post.id === postId
             ? {
                 ...post,
-                likes: post.likes.filter((like) => like.id !== likeId),
+                likes: post.likes.filter((like) => like.id !== postId),
               }
             : post
         ),

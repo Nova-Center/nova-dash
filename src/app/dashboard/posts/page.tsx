@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   usePostsStore,
   Comment as CommentType,
@@ -41,7 +41,7 @@ import {
   Image as ImageIcon,
 } from "lucide-react";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { TooltipDateTime } from "@/components/dashboard/tootlip-datetime";
 import Image from "next/image";
@@ -107,8 +107,8 @@ export default function PostsPage() {
     deleteLike,
   } = usePostsStore();
 
-  const { data: usersData = { data: [] } } = useUsers();
-  const users = usersData.data;
+  const usersQuery = useUsers();
+  const queryClient = useQueryClient();
 
   const {
     data: postsData = [],
@@ -146,13 +146,14 @@ export default function PostsPage() {
 
   const getUserById = (userId: number | null) => {
     if (!userId) return null;
-    return users.find((user) => user.id === userId) || null;
+    if (!usersQuery.data?.data) return null;
+    return usersQuery.data.data.find((user) => user.id === userId) || null;
   };
 
   const handleDeletePost = async (postId: number) => {
     try {
       await deletePost(postId);
-      await fetchPosts(meta?.currentPage || 1);
+      await queryClient.invalidateQueries({ queryKey: ["posts"] });
       setDeleteDialog({
         isOpen: false,
         post: null,
@@ -214,6 +215,7 @@ export default function PostsPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead>ID</TableHead>
                     <TableHead>Auteur</TableHead>
                     <TableHead>Image</TableHead>
                     <TableHead>Contenu</TableHead>
@@ -241,6 +243,7 @@ export default function PostsPage() {
                       const postUser = getUserById(post.userId);
                       return (
                         <TableRow key={post.id}>
+                          <TableCell>{post.id}</TableCell>
                           <TableCell>
                             {postUser ? (
                               <div className="flex items-center gap-2">
@@ -523,9 +526,23 @@ export default function PostsPage() {
                         <Button
                           variant="destructive"
                           size="sm"
-                          onClick={() =>
-                            deleteComment(commentDialog.post.id, comment.id)
-                          }
+                          onClick={() => {
+                            deleteComment(
+                              commentDialog.post.id,
+                              comment.id
+                            ).then(() => {
+                              queryClient.invalidateQueries({
+                                queryKey: ["posts"],
+                              });
+                              queryClient.invalidateQueries({
+                                queryKey: ["posts-stats"],
+                              });
+                              setCommentDialog({
+                                isOpen: false,
+                                post: null,
+                              });
+                            });
+                          }}
                         >
                           <Trash className="w-4 h-4" />
                         </Button>
@@ -600,9 +617,19 @@ export default function PostsPage() {
                           <Button
                             variant="destructive"
                             size="sm"
-                            onClick={() =>
-                              deleteLike(likesDialog.post.id, like.id)
-                            }
+                            onClick={() => {
+                              deleteLike(likesDialog.post.id, likeUser.id);
+                              setLikesDialog({
+                                isOpen: false,
+                                post: null,
+                              });
+                              queryClient.invalidateQueries({
+                                queryKey: ["posts"],
+                              });
+                              queryClient.invalidateQueries({
+                                queryKey: ["posts-stats"],
+                              });
+                            }}
                           >
                             <Trash className="w-4 h-4" />
                           </Button>

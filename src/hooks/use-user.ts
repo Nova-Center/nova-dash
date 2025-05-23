@@ -7,13 +7,10 @@ export function useUser(userId: number | null) {
     queryKey: ["user", userId],
     queryFn: async () => {
       if (!userId) return null;
-      console.log("Fetching user with ID:", userId);
       try {
         const response = await api.get<User>(`/api/v1/users/${userId}`);
-        console.log("User response:", response.data);
         return response.data;
       } catch (error) {
-        console.error("Error fetching user:", error);
         throw error;
       }
     },

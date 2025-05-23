@@ -5,6 +5,7 @@ import { PostsStats } from "@/store/usePostsStore";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { useUser } from "@/hooks/use-user";
+import BadgeRole from "../badge-role";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -37,17 +38,11 @@ export function PopularPosts({ stats }: PopularPostsProps) {
   const mostLikedPost = stats.mostLikedPosts[0];
   const mostCommentedPost = stats.mostCommentedPosts[0];
 
-  console.log("Most liked post:", mostLikedPost);
-  console.log("Most commented post:", mostCommentedPost);
-
   const { data: likedPostUser, isLoading: isLoadingLikedUser } = useUser(
     mostLikedPost?.userId || null
   );
   const { data: commentedPostUser, isLoading: isLoadingCommentedUser } =
     useUser(mostCommentedPost?.userId || null);
-
-  console.log("Liked post user:", likedPostUser);
-  console.log("Commented post user:", commentedPostUser);
 
   return (
     <motion.div
@@ -87,7 +82,7 @@ export function PopularPosts({ stats }: PopularPostsProps) {
                     </p>
                     <p className="text-sm text-muted-foreground">
                       {likedPostUser?.role && (
-                        <Badge variant="secondary">{likedPostUser.role}</Badge>
+                        <BadgeRole role={likedPostUser.role} />
                       )}
                     </p>
                   </div>
@@ -136,9 +131,7 @@ export function PopularPosts({ stats }: PopularPostsProps) {
                     </p>
                     <p className="text-sm text-muted-foreground">
                       {commentedPostUser?.role && (
-                        <Badge variant="secondary">
-                          {commentedPostUser.role}
-                        </Badge>
+                        <BadgeRole role={commentedPostUser.role} />
                       )}
                     </p>
                   </div>
