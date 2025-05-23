@@ -10,8 +10,11 @@ import { fr } from "date-fns/locale";
 import { Label } from "../ui/label";
 import { Calendar } from "lucide-react";
 
-export const TooltipDateTime = ({ date }: { date: Date | string }) => {
+export const TooltipDateTime = ({ date }: { date: Date | string | null }) => {
+  if (!date) return null;
+
   const formattedDate = format(new Date(date), "PP", { locale: fr });
+  const formattedTime = format(new Date(date), "p", { locale: fr });
 
   return (
     <TooltipProvider>
@@ -23,7 +26,7 @@ export const TooltipDateTime = ({ date }: { date: Date | string }) => {
         </TooltipTrigger>
         <TooltipContent className="flex items-center gap-2">
           <Calendar className="w-4 h-4" />
-          <p>{format(new Date(date), "PPPP, HH:mm", { locale: fr })}</p>
+          <p>{formattedTime}</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
