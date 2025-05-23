@@ -77,18 +77,18 @@ export function StatsCards({ stats }: StatsCardsProps) {
       </motion.div>
 
       <motion.div variants={itemVariants}>
-        <Card className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900">
+        <Card className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-purple-700 dark:text-purple-300">
+            <CardTitle className="text-sm font-medium text-green-700 dark:text-green-300">
               Total Commentaires
             </CardTitle>
-            <MessageSquare className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+            <MessageSquare className="h-4 w-4 text-green-600 dark:text-green-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-purple-800 dark:text-purple-200">
+            <div className="text-2xl font-bold text-green-800 dark:text-green-200">
               {stats.totalComments}
             </div>
-            <p className="text-xs text-purple-600 dark:text-purple-400">
+            <p className="text-xs text-green-600 dark:text-green-400">
               Nombre total de commentaires
             </p>
           </CardContent>

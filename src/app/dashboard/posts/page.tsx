@@ -191,17 +191,6 @@ export default function PostsPage() {
             <PopularPosts stats={stats} />
           </>
         )}
-        <div className="flex items-center justify-between">
-          <h2 className="text-3xl font-bold tracking-tight">Posts</h2>
-          <div className="flex items-center space-x-2">
-            <Input
-              placeholder="Rechercher un post..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="max-w-sm"
-            />
-          </div>
-        </div>
 
         <Card>
           <CardHeader>
@@ -211,6 +200,18 @@ export default function PostsPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
+            <div className="flex items-center space-x-4 mb-6">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <Input
+                  placeholder="Rechercher un post..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+            </div>
+
             <div className="rounded-md border">
               <Table>
                 <TableHeader>

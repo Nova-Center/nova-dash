@@ -355,6 +355,7 @@ export default function UsersPage() {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead>ID</TableHead>
                   <TableHead>Avatar</TableHead>
                   <TableHead>Nom d'utilisateur</TableHead>
                   <TableHead>Nom complet</TableHead>
@@ -382,6 +383,7 @@ export default function UsersPage() {
                 ) : (
                   filteredUsers.map((user) => (
                     <TableRow key={user.id}>
+                      <TableCell>{user.id}</TableCell>
                       <TableCell>
                         <Avatar>
                           <AvatarImage

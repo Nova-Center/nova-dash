@@ -393,6 +393,7 @@ export default function PointsPage() {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead>ID</TableHead>
                   <TableHead>Avatar</TableHead>
                   <TableHead>Nom d'utilisateur</TableHead>
                   <TableHead>Points</TableHead>
@@ -415,6 +416,7 @@ export default function PointsPage() {
                 ) : (
                   filteredUsers.map((user) => (
                     <TableRow key={user.id}>
+                      <TableCell>{user.id}</TableCell>
                       <TableCell>
                         <Avatar>
                           <AvatarImage
