@@ -49,6 +49,7 @@ import BadgeRole from "@/components/dashboard/badge-role";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { TooltipDateTime } from "@/components/dashboard/tootlip-datetime";
 import CalendarBirthdate from "@/components/dashboard/calendar-birthdate";
+import { useRouter } from "next/navigation";
 
 const itemVariants = {
   hidden: { y: 20, opacity: 0 },
@@ -63,7 +64,21 @@ const itemVariants = {
   },
 };
 
+const cardVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.1,
+      duration: 0.5,
+      ease: "easeOut",
+    },
+  }),
+};
+
 export default function UsersPage() {
+  const router = useRouter();
   const {
     error: usersError,
     users,
@@ -245,56 +260,84 @@ export default function UsersPage() {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            <Card className="bg-gradient-to-br bg-blue-600 text-white">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Total Utilisateurs
-                </CardTitle>
-                <Users className="h-4 w-4" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">
-                  {stats?.totalUsers || 0}
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="bg-gradient-to-br bg-nova-secondary text-white">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Superadmins
-                </CardTitle>
-                <ShieldUser className="h-4 w-4" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">
-                  {stats?.usersByRole?.superadmin || 0}
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="bg-gradient-to-br bg-yellow-500 text-white">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Admins</CardTitle>
-                <Shield className="h-4 w-4" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">
-                  {stats?.usersByRole?.admin || 0}
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="bg-gradient-to-br bg-gray-500 text-white">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Utilisateurs
-                </CardTitle>
-                <UserIcon className="h-4 w-4" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">
-                  {stats?.usersByRole?.user || 0}
-                </div>
-              </CardContent>
-            </Card>
+            <motion.div
+              custom={0}
+              variants={cardVariants}
+              initial="hidden"
+              animate="visible"
+            >
+              <Card className="bg-gradient-to-br bg-blue-600 text-white">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">
+                    Total Utilisateurs
+                  </CardTitle>
+                  <Users className="h-4 w-4" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">
+                    {stats?.totalUsers || 0}
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+            <motion.div
+              custom={1}
+              variants={cardVariants}
+              initial="hidden"
+              animate="visible"
+            >
+              <Card className="bg-gradient-to-br bg-nova-secondary text-white">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">
+                    Superadmins
+                  </CardTitle>
+                  <ShieldUser className="h-4 w-4" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">
+                    {stats?.usersByRole?.superadmin || 0}
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+            <motion.div
+              custom={2}
+              variants={cardVariants}
+              initial="hidden"
+              animate="visible"
+            >
+              <Card className="bg-gradient-to-br bg-yellow-500 text-white">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">Admins</CardTitle>
+                  <Shield className="h-4 w-4" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">
+                    {stats?.usersByRole?.admin || 0}
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+            <motion.div
+              custom={3}
+              variants={cardVariants}
+              initial="hidden"
+              animate="visible"
+            >
+              <Card className="bg-gradient-to-br bg-gray-500 text-white">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">
+                    Utilisateurs
+                  </CardTitle>
+                  <UserIcon className="h-4 w-4" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">
+                    {stats?.usersByRole?.user || 0}
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
           </div>
           <div className="flex items-center space-x-4 mb-6">
             <div className="relative flex-1">
@@ -545,16 +588,14 @@ export default function UsersPage() {
               </div>
               <div>
                 <label className="text-sm font-medium">Points Nova</label>
-                <Input
-                  type="number"
-                  defaultValue={selectedUser.novaPoints}
-                  onChange={(e) =>
-                    setUpdatedUser((prev) => ({
-                      ...prev,
-                      novaPoints: parseInt(e.target.value),
-                    }))
-                  }
-                />
+                <Button
+                  onClick={() => router.push(`/dashboard/points`)}
+                  variant="outline"
+                  className="cursor-pointer w-full justify-start"
+                >
+                  {selectedUser.novaPoints}
+                  <Coins className="w-4 h-4" />
+                </Button>
               </div>
               <div>
                 <CalendarBirthdate

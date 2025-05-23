@@ -66,6 +66,19 @@ const itemVariants = {
   },
 };
 
+const cardVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.1,
+      duration: 0.5,
+      ease: "easeOut",
+    },
+  }),
+};
+
 export default function PointsPage() {
   const {
     users,
@@ -188,130 +201,172 @@ export default function PointsPage() {
       </div>
       {/* Stats Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Total des Nova Points</CardTitle>
-            <CardDescription>
-              Somme totale des points distribués
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center space-x-4">
-              <div className="p-3 bg-blue-100 rounded-full">
-                <Coins className="w-6 h-6 text-blue-600" />
+        <motion.div
+          custom={0}
+          variants={cardVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <Card>
+            <CardHeader>
+              <CardTitle>Total des Nova Points</CardTitle>
+              <CardDescription>
+                Somme totale des points distribués
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center space-x-4">
+                <div className="p-3 bg-blue-100 rounded-full">
+                  <Coins className="w-6 h-6 text-blue-600" />
+                </div>
+                <div>
+                  <p className="text-3xl font-bold">
+                    {stats?.totalPoints.toLocaleString() || 0}
+                  </p>
+                  <p className="text-sm text-gray-500">Nova Points</p>
+                </div>
               </div>
-              <div>
-                <p className="text-3xl font-bold">
-                  {stats?.totalPoints.toLocaleString() || 0}
-                </p>
-                <p className="text-sm text-gray-500">Nova Points</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </motion.div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Moyenne par Utilisateur</CardTitle>
-            <CardDescription>Points moyens par portefeuille</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center space-x-4">
-              <div className="p-3 bg-green-100 rounded-full">
-                <TrendingUp className="w-6 h-6 text-green-600" />
+        <motion.div
+          custom={1}
+          variants={cardVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <Card>
+            <CardHeader>
+              <CardTitle>Moyenne par Utilisateur</CardTitle>
+              <CardDescription>Points moyens par portefeuille</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center space-x-4">
+                <div className="p-3 bg-green-100 rounded-full">
+                  <TrendingUp className="w-6 h-6 text-green-600" />
+                </div>
+                <div>
+                  <p className="text-3xl font-bold">
+                    {stats?.averagePoints.toLocaleString(undefined, {
+                      maximumFractionDigits: 2,
+                    }) || 0}
+                  </p>
+                  <p className="text-sm text-gray-500">Points moyens</p>
+                </div>
               </div>
-              <div>
-                <p className="text-3xl font-bold">
-                  {stats?.averagePoints.toLocaleString(undefined, {
-                    maximumFractionDigits: 2,
-                  }) || 0}
-                </p>
-                <p className="text-sm text-gray-500">Points moyens</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </motion.div>
       </div>
 
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Évolution des Points</CardTitle>
-            <CardDescription>
-              Historique des points sur 30 jours
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="h-[300px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart
-                  data={stats?.pointsHistory || []}
-                  margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-                >
-                  <defs>
-                    <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.8} />
-                      <stop offset="95%" stopColor="#3B82F6" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis
-                    dataKey="date"
-                    tickFormatter={(date) =>
-                      new Date(date).toLocaleDateString("fr-FR", {
-                        day: "numeric",
-                        month: "short",
-                      })
-                    }
-                  />
-                  <YAxis />
-                  <Tooltip
-                    labelFormatter={(date) =>
-                      new Date(date).toLocaleDateString("fr-FR", {
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric",
-                      })
-                    }
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="total"
-                    stroke="#3B82F6"
-                    fillOpacity={1}
-                    fill="url(#colorTotal)"
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
+        <motion.div
+          custom={2}
+          variants={cardVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <Card>
+            <CardHeader>
+              <CardTitle>Évolution des Points</CardTitle>
+              <CardDescription>
+                Historique des points sur 30 jours
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="h-[300px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart
+                    data={stats?.pointsHistory || []}
+                    margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                  >
+                    <defs>
+                      <linearGradient
+                        id="colorTotal"
+                        x1="0"
+                        y1="0"
+                        x2="0"
+                        y2="1"
+                      >
+                        <stop
+                          offset="5%"
+                          stopColor="#3B82F6"
+                          stopOpacity={0.8}
+                        />
+                        <stop
+                          offset="95%"
+                          stopColor="#3B82F6"
+                          stopOpacity={0}
+                        />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis
+                      dataKey="date"
+                      tickFormatter={(date) =>
+                        new Date(date).toLocaleDateString("fr-FR", {
+                          day: "numeric",
+                          month: "short",
+                        })
+                      }
+                    />
+                    <YAxis />
+                    <Tooltip
+                      labelFormatter={(date) =>
+                        new Date(date).toLocaleDateString("fr-FR", {
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
+                        })
+                      }
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="total"
+                      stroke="#3B82F6"
+                      fillOpacity={1}
+                      fill="url(#colorTotal)"
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Distribution des Points</CardTitle>
-            <CardDescription>
-              Répartition des points par tranche
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="h-[300px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart
-                  data={stats?.pointsDistribution || []}
-                  margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="range" />
-                  <YAxis />
-                  <Tooltip />
-                  <Bar dataKey="count" fill="#3B82F6" />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
+        <motion.div
+          custom={3}
+          variants={cardVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <Card>
+            <CardHeader>
+              <CardTitle>Distribution des Points</CardTitle>
+              <CardDescription>
+                Répartition des points par tranche
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="h-[300px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={stats?.pointsDistribution || []}
+                    margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="range" />
+                    <YAxis />
+                    <Tooltip />
+                    <Bar dataKey="count" fill="#3B82F6" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
       </div>
 
       <Card>

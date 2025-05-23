@@ -16,7 +16,7 @@ export function DashboardHeader({ currentPath }: DashboardHeaderProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <div className="flex flex-1 items-center gap-4 md:gap-8">
+      <div className="flex flex-1 items-center justify-end gap-4 md:gap-8">
         <h1 className="text-xl font-semibold md:text-2xl">
           {formatPathName(currentPath)}
         </h1>
