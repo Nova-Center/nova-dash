@@ -21,12 +21,14 @@ import {
   HeartHandshake,
   File,
   Settings,
+  Newspaper,
 } from "lucide-react";
 
 const queryClient = new QueryClient();
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+  { name: "Actualités", href: "/dashboard/news", icon: Newspaper },
   { name: "Utilisateurs", href: "/dashboard/users", icon: Users },
   {
     name: "Signalements",
