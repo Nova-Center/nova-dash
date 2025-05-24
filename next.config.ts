@@ -14,6 +14,10 @@ const nextConfig: NextConfig = {
         protocol: "http",
         port: "9000",
       },
+      {
+        hostname: "picsum.photos",
+        protocol: "https",
+      },
     ],
   },
 };
