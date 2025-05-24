@@ -1,6 +1,6 @@
 "use client";
 
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useUserStore } from "@/store/user-store";
@@ -22,8 +22,15 @@ export default function ProtectedRoute({
 
     if (status === "authenticated") {
       const getUser = async () => {
-        const res = await api.get("/api/v1/me");
-        setUser(res.data);
+        const res = await api.get("/api/v1/me").catch((err) => {
+          if (err.response.status === 401) {
+            signOut();
+          }
+        });
+
+        if (res) {
+          setUser(res.data);
+        }
       };
       getUser();
     }
