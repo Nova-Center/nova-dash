@@ -14,4 +14,6 @@ export interface User {
   role: Role;
   isBanned: boolean;
   banReason: string | null;
+  isOnline: boolean;
+  lastSeenAt: Date | null;
 }

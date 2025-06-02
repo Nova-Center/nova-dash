@@ -23,6 +23,7 @@ import {
   Settings,
   Newspaper,
 } from "lucide-react";
+import WebSocketProvider from "@/components/websocket-provider";
 
 const queryClient = new QueryClient();
 
@@ -55,19 +56,21 @@ export default function DashboardLayout({
       <ProtectedRoute>
         <StoreProvider>
           <QueryClientProvider client={queryClient}>
-            <div className="min-h-screen bg-[#FEF0ED]">
-              <DashboardSidebar navigation={navigation} />
-              <div className="flex flex-col md:pl-64">
-                <DashboardHeader
-                  currentPath={
-                    navigation.find((item) => item.href === pathname)?.name ||
-                    "Dashboard"
-                  }
-                />
-                <main className="flex-1 p-6 relative">{children}</main>
+            <WebSocketProvider>
+              <div className="min-h-screen bg-[#FEF0ED]">
+                <DashboardSidebar navigation={navigation} />
+                <div className="flex flex-col md:pl-64">
+                  <DashboardHeader
+                    currentPath={
+                      navigation.find((item) => item.href === pathname)?.name ||
+                      "Dashboard"
+                    }
+                  />
+                  <main className="flex-1 p-6 relative">{children}</main>
+                </div>
+                <Toaster />
               </div>
-              <Toaster />
-            </div>
+            </WebSocketProvider>
             <ReactQueryDevtools initialIsOpen={false} />
           </QueryClientProvider>
         </StoreProvider>

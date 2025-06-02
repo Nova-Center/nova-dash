@@ -42,7 +42,7 @@ interface UsersStore {
   } | null;
   setSearchQuery: (query: string) => void;
   setSelectedUser: (user: User | null) => void;
-  fetchUsers: () => Promise<ApiResponse>;
+  fetchUsers: (page?: number) => Promise<ApiResponse>;
   fetchUserStats: () => Promise<void>;
   banUser: (userId: number, reason: string) => Promise<void>;
   unbanUser: (userId: number) => Promise<void>;
@@ -75,10 +75,10 @@ export const useUsersStore = create<UsersStore>((set, get) => ({
     }
   },
 
-  fetchUsers: async () => {
+  fetchUsers: async (page = 1) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await api.get<ApiResponse>("/api/v1/users");
+      const response = await api.get<ApiResponse>(`/api/v1/users?page=${page}`);
       const data = response.data;
       set({
         users: data.data,

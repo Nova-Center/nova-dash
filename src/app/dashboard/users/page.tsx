@@ -96,9 +96,15 @@ export default function UsersPage() {
     stats,
   } = useUsersStore();
 
+  const extractPageFromUrl = (url: string | null): number | null => {
+    if (!url) return null;
+    const match = url.match(/[?&]page=(\d+)/);
+    return match ? parseInt(match[1], 10) : null;
+  };
+
   const { isLoading, error } = useQuery({
-    queryKey: ["users"],
-    queryFn: fetchUsers,
+    queryKey: ["users", meta?.currentPage || 1],
+    queryFn: () => fetchUsers(meta?.currentPage || 1),
     retry: 1,
   });
 
@@ -355,37 +361,44 @@ export default function UsersPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>ID</TableHead>
-                  <TableHead>Avatar</TableHead>
-                  <TableHead>Nom d'utilisateur</TableHead>
-                  <TableHead>Nom complet</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Rôle</TableHead>
-                  <TableHead>NovaPoints</TableHead>
-                  <TableHead>Date de création</TableHead>
-                  <TableHead>Date de modification</TableHead>
-                  <TableHead>Actions</TableHead>
+                  <TableHead className="text-center">ID</TableHead>
+                  <TableHead className="text-center">Avatar</TableHead>
+                  <TableHead className="text-center">
+                    Nom d'utilisateur
+                  </TableHead>
+                  <TableHead className="text-center">Statut</TableHead>
+                  <TableHead className="text-center">Nom complet</TableHead>
+                  <TableHead className="text-center">Email</TableHead>
+                  <TableHead className="text-center">Rôle</TableHead>
+                  <TableHead className="text-center">NovaPoints</TableHead>
+                  <TableHead className="text-center">
+                    Date de création
+                  </TableHead>
+                  <TableHead className="text-center">
+                    Date de modification
+                  </TableHead>
+                  <TableHead className="text-center">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {isLoading ? (
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center">
+                    <TableCell colSpan={11} className="text-center">
                       Chargement...
                     </TableCell>
                   </TableRow>
                 ) : filteredUsers.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center">
+                    <TableCell colSpan={11} className="text-center">
                       Aucun utilisateur trouvé
                     </TableCell>
                   </TableRow>
                 ) : (
                   filteredUsers.map((user) => (
                     <TableRow key={user.id}>
-                      <TableCell>{user.id}</TableCell>
-                      <TableCell>
-                        <Avatar>
+                      <TableCell className="text-center">{user.id}</TableCell>
+                      <TableCell className="text-center">
+                        <Avatar className="mx-auto">
                           <AvatarImage
                             src={
                               user.avatar ||
@@ -399,28 +412,43 @@ export default function UsersPage() {
                           </AvatarFallback>
                         </Avatar>
                       </TableCell>
-                      <TableCell className="font-medium">
+                      <TableCell className="text-center font-medium">
                         {user.username}
                       </TableCell>
-                      <TableCell>{`${user.firstName} ${user.lastName}`}</TableCell>
-                      <TableCell>{user.email}</TableCell>
-                      <TableCell>
+                      <TableCell className="text-center">
+                        {user.isOnline ? (
+                          <div className="flex items-center justify-center gap-2">
+                            <div className="w-2 h-2 bg-green-500 rounded-full" />
+                            En ligne
+                          </div>
+                        ) : (
+                          <div className="flex items-center justify-center gap-2">
+                            <div className="w-2 h-2 bg-red-500 rounded-full" />
+                            Deconnecté
+                          </div>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-center">{`${user.firstName} ${user.lastName}`}</TableCell>
+                      <TableCell className="text-center">
+                        {user.email}
+                      </TableCell>
+                      <TableCell className="text-center">
                         <BadgeRole role={user.role} />
                       </TableCell>
-                      <TableCell className="">
+                      <TableCell className="text-center">
                         <div className="flex items-center justify-center gap-1">
                           {user.novaPoints}
                           <Coins className="w-4 h-4" />
                         </div>
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="text-center">
                         <TooltipDateTime date={user.createdAt} />
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="text-center">
                         <TooltipDateTime date={user.updatedAt} />
                       </TableCell>
-                      <TableCell>
-                        <div className="flex space-x-2">
+                      <TableCell className="text-center">
+                        <div className="flex justify-center space-x-2">
                           <Button
                             variant="outline"
                             size="sm"
@@ -477,7 +505,10 @@ export default function UsersPage() {
                   size="sm"
                   disabled={!meta.previousPageUrl}
                   onClick={() => {
-                    // Handle previous page
+                    const page = extractPageFromUrl(meta.previousPageUrl);
+                    if (page) {
+                      fetchUsers(page);
+                    }
                   }}
                 >
                   <ChevronLeft className="w-4 h-4" />
@@ -490,7 +521,10 @@ export default function UsersPage() {
                   size="sm"
                   disabled={!meta.nextPageUrl}
                   onClick={() => {
-                    // Handle next page
+                    const page = extractPageFromUrl(meta.nextPageUrl);
+                    if (page) {
+                      fetchUsers(page);
+                    }
                   }}
                 >
                   <ChevronRight className="w-4 h-4" />
