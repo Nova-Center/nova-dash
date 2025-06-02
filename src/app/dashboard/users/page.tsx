@@ -361,23 +361,17 @@ export default function UsersPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="text-center">ID</TableHead>
-                  <TableHead className="text-center">Avatar</TableHead>
-                  <TableHead className="text-center">
-                    Nom d'utilisateur
-                  </TableHead>
-                  <TableHead className="text-center">Statut</TableHead>
-                  <TableHead className="text-center">Nom complet</TableHead>
-                  <TableHead className="text-center">Email</TableHead>
-                  <TableHead className="text-center">Rôle</TableHead>
-                  <TableHead className="text-center">NovaPoints</TableHead>
-                  <TableHead className="text-center">
-                    Date de création
-                  </TableHead>
-                  <TableHead className="text-center">
-                    Date de modification
-                  </TableHead>
-                  <TableHead className="text-center">Actions</TableHead>
+                  <TableHead>ID</TableHead>
+                  <TableHead>Avatar</TableHead>
+                  <TableHead>Nom d'utilisateur</TableHead>
+                  <TableHead>Statut</TableHead>
+                  <TableHead>Nom complet</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Rôle</TableHead>
+                  <TableHead>NovaPoints</TableHead>
+                  <TableHead>Date de création</TableHead>
+                  <TableHead>Date de modification</TableHead>
+                  <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -396,9 +390,9 @@ export default function UsersPage() {
                 ) : (
                   filteredUsers.map((user) => (
                     <TableRow key={user.id}>
-                      <TableCell className="text-center">{user.id}</TableCell>
-                      <TableCell className="text-center">
-                        <Avatar className="mx-auto">
+                      <TableCell>{user.id}</TableCell>
+                      <TableCell>
+                        <Avatar>
                           <AvatarImage
                             src={
                               user.avatar ||
@@ -412,43 +406,41 @@ export default function UsersPage() {
                           </AvatarFallback>
                         </Avatar>
                       </TableCell>
-                      <TableCell className="text-center font-medium">
+                      <TableCell className="font-medium">
                         {user.username}
                       </TableCell>
-                      <TableCell className="text-center">
+                      <TableCell>
                         {user.isOnline ? (
-                          <div className="flex items-center justify-center gap-2">
+                          <div className="flex items-center gap-2">
                             <div className="w-2 h-2 bg-green-500 rounded-full" />
                             En ligne
                           </div>
                         ) : (
-                          <div className="flex items-center justify-center gap-2">
+                          <div className="flex items-center gap-2">
                             <div className="w-2 h-2 bg-red-500 rounded-full" />
                             Deconnecté
                           </div>
                         )}
                       </TableCell>
-                      <TableCell className="text-center">{`${user.firstName} ${user.lastName}`}</TableCell>
-                      <TableCell className="text-center">
-                        {user.email}
-                      </TableCell>
-                      <TableCell className="text-center">
+                      <TableCell>{`${user.firstName} ${user.lastName}`}</TableCell>
+                      <TableCell>{user.email}</TableCell>
+                      <TableCell>
                         <BadgeRole role={user.role} />
                       </TableCell>
-                      <TableCell className="text-center">
-                        <div className="flex items-center justify-center gap-1">
+                      <TableCell>
+                        <div className="flex items-center gap-1">
                           {user.novaPoints}
                           <Coins className="w-4 h-4" />
                         </div>
                       </TableCell>
-                      <TableCell className="text-center">
+                      <TableCell>
                         <TooltipDateTime date={user.createdAt} />
                       </TableCell>
-                      <TableCell className="text-center">
+                      <TableCell>
                         <TooltipDateTime date={user.updatedAt} />
                       </TableCell>
-                      <TableCell className="text-center">
-                        <div className="flex justify-center space-x-2">
+                      <TableCell>
+                        <div className="flex space-x-2">
                           <Button
                             variant="outline"
                             size="sm"
