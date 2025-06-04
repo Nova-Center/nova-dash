@@ -46,7 +46,7 @@ interface PointsState {
     perPage: number;
   } | null;
   setSelectedUser: (user: User | null) => void;
-  fetchUsers: () => Promise<User[]>;
+  fetchUsers: (page?: number) => Promise<User[]>;
   fetchUserHistory: (userId: number) => Promise<void>;
   resetUserHistory: () => void;
   fetchStats: () => Promise<PointsStats>;
@@ -76,10 +76,10 @@ export const usePointsStore = create<PointsState>((set, get) => ({
 
   resetUserHistory: () => set({ userHistory: [], isHistoryLoading: false }),
 
-  fetchUsers: async () => {
+  fetchUsers: async (page = 1) => {
     try {
       set({ isLoading: true, error: null });
-      const response = await api.get("/api/v1/users");
+      const response = await api.get(`/api/v1/users?page=${page}`);
       const data = response.data;
 
       if (response.status !== 200) {

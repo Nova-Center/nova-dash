@@ -97,9 +97,11 @@ export default function PointsPage() {
     removePoints,
   } = usePointsStore();
 
+  const [currentPage, setCurrentPage] = useState(1);
+
   const { isLoading, error } = useQuery({
-    queryKey: ["users"],
-    queryFn: fetchUsers,
+    queryKey: ["users", currentPage],
+    queryFn: () => fetchUsers(currentPage),
     retry: 1,
   });
 
@@ -482,22 +484,22 @@ export default function PointsPage() {
                 <Button
                   variant="outline"
                   size="sm"
-                  disabled={meta.currentPage === 1}
+                  disabled={currentPage === 1}
                   onClick={() => {
-                    // Handle previous page
+                    setCurrentPage(currentPage - 1);
                   }}
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </Button>
                 <span className="text-sm">
-                  Page {meta.currentPage} sur {meta.lastPage}
+                  Page {currentPage} sur {meta.lastPage}
                 </span>
                 <Button
                   variant="outline"
                   size="sm"
-                  disabled={meta.currentPage === meta.lastPage}
+                  disabled={currentPage === meta.lastPage}
                   onClick={() => {
-                    // Handle next page
+                    setCurrentPage(currentPage + 1);
                   }}
                 >
                   <ChevronRight className="w-4 h-4" />
