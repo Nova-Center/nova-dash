@@ -44,6 +44,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Label } from "@/components/ui/label";
 
 const cardVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -175,20 +176,13 @@ export default function ServicesPage() {
                 sur {meta?.lastPage || 1}
               </CardDescription>
             </div>
-            <div className="flex gap-4 w-full md:w-auto">
-              <div className="relative flex-1 md:flex-none">
-                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Rechercher un service..."
-                  className="pl-8"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
-              <Button>
-                <Plus className="w-4 h-4 mr-2" />
-                Nouveau Service
-              </Button>
+            <div className="flex flex-col gap-2 w-full md:w-auto">
+              <Input
+                placeholder="Rechercher un service..."
+                id="search"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
             </div>
           </div>
         </CardHeader>
@@ -212,7 +206,7 @@ export default function ServicesPage() {
                   >
                     <Card className="hover:shadow-lg transition-all duration-300">
                       <CardHeader>
-                        <div className="flex justify-between items-start">
+                        <div className="flex justify-between items-start gap-4">
                           <div>
                             <CardTitle className="line-clamp-1">
                               {service.title}
@@ -226,11 +220,12 @@ export default function ServicesPage() {
                               variant={
                                 service.volunteerId ? "default" : "secondary"
                               }
+                              className="bg-green-500"
                             >
                               {service.volunteerId ? "Assigné" : "Disponible"}
                             </Badge>
                             <Button
-                              variant="ghost"
+                              variant="destructive"
                               size="icon"
                               className="h-8 w-8"
                               onClick={() =>
@@ -393,6 +388,7 @@ export default function ServicesPage() {
           <AlertDialogFooter>
             <AlertDialogCancel>Annuler</AlertDialogCancel>
             <AlertDialogAction
+              className="bg-red-500 hover:bg-red-600"
               onClick={() =>
                 deleteDialog.serviceId &&
                 handleDeleteService(deleteDialog.serviceId)

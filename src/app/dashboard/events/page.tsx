@@ -3,14 +3,6 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEventsStore } from "@/store/useEventsStore";
 import { useUsers } from "@/hooks/use-users";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
