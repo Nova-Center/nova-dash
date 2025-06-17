@@ -84,8 +84,16 @@ export default function ShopPage() {
   });
 
   const createMutation = useMutation({
-    mutationFn: (newItem: Omit<ShopItem, "id" | "datePurchase" | "clientId">) =>
-      api.post("/api/v1/shop-items", newItem),
+    mutationFn: (formData: FormData) => {
+      const newItem: Omit<ShopItem, "id" | "datePurchase" | "clientId"> = {
+        ownerId: parseInt(formData.get("ownerId") as string),
+        name: formData.get("name") as string,
+        description: formData.get("description") as string,
+        price: parseInt(formData.get("price") as string),
+        image: formData.get("image") as string,
+      };
+      return api.post("/api/v1/shop-items", newItem);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["items"] });
       setIsFormOpen(false);
@@ -121,13 +129,15 @@ export default function ShopPage() {
     },
   });
 
-  const handleSubmit = (
-    formData: Omit<ShopItem, "id" | "datePurchase" | "clientId">
-  ) => {
+  const handleSubmit = (formData: FormData) => {
     if (selectedItem) {
       updateMutation.mutate({
-        ...formData,
         id: selectedItem.id,
+        ownerId: parseInt(formData.get("ownerId") as string),
+        name: formData.get("name") as string,
+        description: formData.get("description") as string,
+        price: parseInt(formData.get("price") as string),
+        image: formData.get("image") as string,
         datePurchase: selectedItem.datePurchase,
         clientId: selectedItem.clientId,
       });

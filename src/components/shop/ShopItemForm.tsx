@@ -19,6 +19,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useState } from "react";
+import FileUpload from "../file-upload";
+import { useFileUpload } from "@/hooks/use-file-upload";
 
 interface ShopItem {
   id?: number;
@@ -34,7 +36,7 @@ interface ShopItemFormProps {
   item?: ShopItem;
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: Omit<ShopItem, "id">) => void;
+  onSubmit: (data: FormData) => void;
 }
 
 export function ShopItemForm({
@@ -55,9 +57,30 @@ export function ShopItemForm({
     }
   );
 
+  const [{ files }, { handleFileChange }] = useFileUpload({
+    accept: "image/*",
+    maxSize: 5 * 1024 * 1024, // 5MB
+  });
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+    const formDataToSend = new FormData();
+
+    formDataToSend.append("ownerId", formData.ownerId.toString());
+    if (formData.clientId) {
+      formDataToSend.append("clientId", formData.clientId.toString());
+    }
+    formDataToSend.append("name", formData.name);
+    formDataToSend.append("description", formData.description);
+    formDataToSend.append("price", formData.price.toString());
+
+    if (files[0]?.file instanceof File) {
+      formDataToSend.append("image", files[0].file);
+    } else if (formData.image) {
+      formDataToSend.append("image", formData.image);
+    }
+
+    onSubmit(formDataToSend);
   };
 
   return (
@@ -138,17 +161,14 @@ export function ShopItemForm({
                 className="col-span-3"
               />
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
+            <div className="flex flex-col gap-4">
               <Label htmlFor="image" className="text-right">
-                Image URL
+                Image
               </Label>
-              <Input
+              <FileUpload
                 id="image"
                 value={formData.image}
-                onChange={(e) =>
-                  setFormData({ ...formData, image: e.target.value })
-                }
-                className="col-span-3"
+                onChange={handleFileChange}
               />
             </div>
           </div>
