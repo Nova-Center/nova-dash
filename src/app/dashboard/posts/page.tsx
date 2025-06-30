@@ -5,7 +5,7 @@ import {
   usePostsStore,
   Comment as CommentType,
   Like,
-} from "@/store/usePostsStore";
+} from "@/store/use-posts-store";
 import { useUsers } from "@/hooks/use-users";
 import {
   Table,

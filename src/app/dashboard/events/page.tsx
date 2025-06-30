@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEventsStore } from "@/store/useEventsStore";
+import { useEventsStore } from "@/store/use-events-store";
 import { useUsers } from "@/hooks/use-users";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";

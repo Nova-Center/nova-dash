@@ -9,7 +9,7 @@ import { motion, Variants } from "framer-motion";
 import { Users, MapPin, Calendar, Image as ImageIcon } from "lucide-react";
 import Image from "next/image";
 import { useQuery } from "@tanstack/react-query";
-import { useEventsStore } from "@/store/useEventsStore";
+import { useEventsStore } from "@/store/use-events-store";
 import {
   Dialog,
   DialogContent,

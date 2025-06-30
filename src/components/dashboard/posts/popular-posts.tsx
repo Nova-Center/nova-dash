@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MessageSquare, Heart } from "lucide-react";
-import { PostsStats } from "@/store/usePostsStore";
+import { PostsStats } from "@/store/use-posts-store";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { useUser } from "@/hooks/use-user";

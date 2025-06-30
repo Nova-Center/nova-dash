@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MessageSquare, Heart, FileText } from "lucide-react";
-import { PostsStats } from "@/store/usePostsStore";
+import { PostsStats } from "@/store/use-posts-store";
 
 const containerVariants = {
   hidden: { opacity: 0 },

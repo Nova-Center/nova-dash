@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { useUsersStore } from "@/store/useUsersStore";
+import { useUsersStore } from "@/store/use-users-store";
 import {
   Table,
   TableBody,

@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useServicesStore } from "@/store/services";
+import { useServicesStore } from "@/store/use-services";
 import {
   Calendar,
   Search,

@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { usePointsStore } from "@/store/usePointsStore";
+import { usePointsStore } from "@/store/use-points-store";
 import { toast } from "sonner";
 import {
   Table,
