@@ -24,12 +24,9 @@ import Image from "next/image";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
-
-interface User {
-  id: number;
-  name: string;
-  email: string;
-}
+import { useFileUpload } from "@/hooks/use-file-upload";
+import FallbackImage from "@/components/fallback-image";
+import { Coins } from "lucide-react";
 
 interface ShopItem {
   id: number;
@@ -40,6 +37,8 @@ interface ShopItem {
   price: number;
   image: string;
   datePurchase: string;
+  updatedAt: string;
+  createdAt: string;
 }
 
 interface PaginationMeta {
@@ -83,20 +82,25 @@ export default function ShopPage() {
     queryFn: () => getItems(currentPage),
   });
 
+  const fileUploadHook = useFileUpload({
+    accept: "image/*",
+    maxSize: 5 * 1024 * 1024, // 5MB
+  });
+
+  const [, { clearFiles }] = fileUploadHook;
+
   const createMutation = useMutation({
     mutationFn: (formData: FormData) => {
-      const newItem: Omit<ShopItem, "id" | "datePurchase" | "clientId"> = {
-        ownerId: parseInt(formData.get("ownerId") as string),
-        name: formData.get("name") as string,
-        description: formData.get("description") as string,
-        price: parseInt(formData.get("price") as string),
-        image: formData.get("image") as string,
-      };
-      return api.post("/api/v1/shop-items", newItem);
+      return api.post("/api/v1/shop-items", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["items"] });
       setIsFormOpen(false);
+      clearFiles();
       toast.success("Article créé avec succès");
     },
     onError: (error) => {
@@ -105,12 +109,19 @@ export default function ShopPage() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: (item: ShopItem) =>
-      api.put(`/api/v1/shop-items/${item.id}`, item),
+    mutationFn: (formData: FormData) => {
+      const itemId = formData.get("id");
+      return api.patch(`/api/v1/shop-items/${itemId}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["items"] });
       setIsFormOpen(false);
       setSelectedItem(undefined);
+      clearFiles();
       toast.success("Article modifié avec succès");
     },
     onError: (error) => {
@@ -131,16 +142,9 @@ export default function ShopPage() {
 
   const handleSubmit = (formData: FormData) => {
     if (selectedItem) {
-      updateMutation.mutate({
-        id: selectedItem.id,
-        ownerId: parseInt(formData.get("ownerId") as string),
-        name: formData.get("name") as string,
-        description: formData.get("description") as string,
-        price: parseInt(formData.get("price") as string),
-        image: formData.get("image") as string,
-        datePurchase: selectedItem.datePurchase,
-        clientId: selectedItem.clientId,
-      });
+      formData.append("id", selectedItem.id.toString());
+      updateMutation.mutate(formData);
+      queryClient.invalidateQueries({ queryKey: ["items"] });
     } else {
       createMutation.mutate(formData);
     }
@@ -184,7 +188,10 @@ export default function ShopPage() {
             <CardTitle>Liste des articles de la boutique</CardTitle>
             <CardDescription>Gérez la boutique</CardDescription>
           </div>
-          <Button onClick={() => setIsFormOpen(true)}>
+          <Button
+            onClick={() => setIsFormOpen(true)}
+            className="bg-blue-500 cursor-pointer transition-colors hover:bg-blue-600"
+          >
             Ajouter un article
           </Button>
         </CardHeader>
@@ -195,15 +202,15 @@ export default function ShopPage() {
               const buyer = item.clientId ? getUserById(item.clientId) : null;
 
               return (
-                <Card key={item.id} className="overflow-hidden">
+                <Card key={item.id} className="overflow-hidden pt-0">
                   <div className="relative h-48 w-full">
-                    <Image
+                    <FallbackImage
                       src={item.image}
                       alt={item.name}
                       width={500}
                       height={500}
                       priority
-                      className="object-cover"
+                      className="object-cover w-full h-full"
                     />
                   </div>
                   <CardHeader>
@@ -215,11 +222,14 @@ export default function ShopPage() {
                   <CardContent>
                     <div className="space-y-4">
                       <div className="flex justify-between items-center">
-                        <span className="text-lg font-semibold">
-                          {item.price} €
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-lg font-semibold">
+                            {item.price}
+                          </span>
+                          <Coins className="w-4 h-4" />
+                        </div>
                         <span className="text-sm text-muted-foreground">
-                          {new Date(item.datePurchase).toLocaleDateString()}
+                          {new Date(item.createdAt).toLocaleDateString()}
                         </span>
                       </div>
 
@@ -236,7 +246,12 @@ export default function ShopPage() {
                           <span className="text-sm font-medium">Statut:</span>
                           {buyer ? (
                             <Badge variant="secondary">
-                              Acheté par {buyer.username}
+                              Acheté par
+                              <span className="font-bold">
+                                {buyer.username}
+                              </span>
+                              le{" "}
+                              {new Date(item.datePurchase).toLocaleDateString()}
                             </Badge>
                           ) : (
                             <Badge variant="outline">Disponible</Badge>
@@ -325,6 +340,7 @@ export default function ShopPage() {
           setSelectedItem(undefined);
         }}
         onSubmit={handleSubmit}
+        fileUploadHook={fileUploadHook}
       />
     </div>
   );

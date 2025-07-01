@@ -1,44 +1,44 @@
 "use client";
 
 import { AlertCircleIcon, ImageIcon, UploadIcon, XIcon } from "lucide-react";
-
-import { useFileUpload } from "@/hooks/use-file-upload";
 import { Button } from "@/components/ui/button";
+import { FileUploadState, FileUploadActions } from "@/hooks/use-file-upload";
+import { useEffect, useState } from "react";
+
+interface FileUploadProps {
+  id: string;
+  state: FileUploadState;
+  actions: FileUploadActions;
+  previewUrl?: string | null;
+}
 
 export default function FileUpload({
   id,
-  value,
-  onChange,
-}: {
-  id: string;
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}) {
-  const maxSizeMB = 5;
-  const maxSize = maxSizeMB * 1024 * 1024; // 2MB default
+  state,
+  actions,
+  previewUrl,
+}: FileUploadProps) {
+  const { files, isDragging, errors } = state;
+  const {
+    handleDragEnter,
+    handleDragLeave,
+    handleDragOver,
+    handleDrop,
+    openFileDialog,
+    removeFile,
+    getInputProps,
+  } = actions;
+  const [previewUrlState, setPreviewUrlState] = useState<string | null>(null);
 
-  const [
-    { files, isDragging, errors },
-    {
-      handleDragEnter,
-      handleDragLeave,
-      handleDragOver,
-      handleDrop,
-      openFileDialog,
-      removeFile,
-      getInputProps,
-    },
-  ] = useFileUpload({
-    accept: "image/svg+xml,image/png,image/jpeg,image/jpg,image/gif",
-    maxSize,
-  });
-  const previewUrl = files[0]?.preview || null;
+  useEffect(() => {
+    setPreviewUrlState(previewUrl || files[0]?.preview || null);
+  }, [previewUrl, files]);
+
   const fileName = files[0]?.file.name || null;
 
   return (
     <div className="flex flex-col gap-2">
       <div className="relative">
-        {/* Drop area */}
         <div
           onDragEnter={handleDragEnter}
           onDragLeave={handleDragLeave}
@@ -48,18 +48,17 @@ export default function FileUpload({
           className="border-input data-[dragging=true]:bg-accent/50 has-[input:focus]:border-ring has-[input:focus]:ring-ring/50 relative flex min-h-52 flex-col items-center justify-center overflow-hidden rounded-xl border border-dashed p-4 transition-colors has-[input:focus]:ring-[3px]"
         >
           <input
-            id={id}
-            value={value}
-            onChange={onChange}
             {...getInputProps()}
+            src={previewUrlState ? previewUrlState : undefined}
+            id={id}
             className="sr-only"
             aria-label="Upload image file"
           />
-          {previewUrl ? (
+          {previewUrlState ? (
             <div className="absolute inset-0 flex items-center justify-center p-4">
               <img
-                src={previewUrl}
-                alt={files[0]?.file?.name || "Uploaded image"}
+                src={previewUrlState}
+                alt={fileName || "Uploaded image"}
                 className="mx-auto max-h-full rounded object-contain"
               />
             </div>
@@ -73,12 +72,16 @@ export default function FileUpload({
               </div>
               <p className="mb-1.5 text-sm font-medium">Drop your image here</p>
               <p className="text-muted-foreground text-xs">
-                SVG, PNG, JPG or GIF (max. {maxSizeMB}MB)
+                SVG, PNG, JPG or GIF (max. 5MB)
               </p>
               <Button
+                type="button"
                 variant="outline"
                 className="mt-4"
-                onClick={openFileDialog}
+                onClick={(e) => {
+                  e.preventDefault();
+                  openFileDialog();
+                }}
               >
                 <UploadIcon
                   className="-ms-1 size-4 opacity-60"
@@ -90,7 +93,7 @@ export default function FileUpload({
           )}
         </div>
 
-        {previewUrl && (
+        {previewUrlState && (
           <div className="absolute top-4 right-4">
             <button
               type="button"
