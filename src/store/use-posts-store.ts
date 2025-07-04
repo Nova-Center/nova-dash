@@ -52,8 +52,25 @@ export interface PostsStats {
   totalPosts: number;
   totalLikes: number;
   totalComments: number;
-  mostLikedPosts: Post[];
-  mostCommentedPosts: Post[];
+  mostLikedPosts: Array<{
+    id: number;
+    content: string;
+    userId: number;
+    likes: Array<{
+      id: number;
+      userId: number;
+    }>;
+  }>;
+  mostCommentedPosts: Array<{
+    id: number;
+    content: string;
+    userId: number;
+    comments: Array<{
+      id: number;
+      userId: number;
+      content: string;
+    }>;
+  }>;
 }
 
 interface PostsState {
@@ -98,7 +115,7 @@ export const usePostsStore = create<PostsState>((set, get) => ({
   },
   fetchStats: async () => {
     try {
-      const response = await api.get<PostsStats>("/api/v1/posts/stats");
+      const response = await api.get<PostsStats>("/api/posts/stats");
       return response.data;
     } catch (error) {
       const errorMessage =

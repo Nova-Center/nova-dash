@@ -43,6 +43,18 @@ interface Meta {
   previousPageUrl: string | null;
 }
 
+interface EventStats {
+  totalEvents: number;
+  totalParticipants: number;
+  upcomingEvents: number;
+  averageParticipants: number;
+  mostPopularEvents: Array<{
+    id: number;
+    title: string;
+    participantCount: number;
+  }>;
+}
+
 interface EventsState {
   events: Event[];
   meta: Meta | null;
@@ -54,7 +66,7 @@ interface EventsState {
   fetchEvents: (page?: number) => Promise<{ data: Event[]; meta: Meta }>;
   deleteEvent: (eventId: number) => Promise<void>;
   removeParticipant: (eventId: number, userId: number) => Promise<void>;
-  fetchStats: () => Promise<any>;
+  fetchStats: () => Promise<EventStats>;
 }
 
 export const useEventsStore = create<EventsState>((set, get) => ({
@@ -117,12 +129,7 @@ export const useEventsStore = create<EventsState>((set, get) => ({
   },
 
   fetchStats: async () => {
-    try {
-      const response = await api.get("/api/v1/events/stats");
-      return response.data;
-    } catch (error) {
-      set({ error: error as Error });
-      throw error;
-    }
+    const response = await api.get<EventStats>("/api/events/stats");
+    return response.data;
   },
 }));

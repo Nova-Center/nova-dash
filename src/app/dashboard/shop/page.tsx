@@ -16,6 +16,16 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { ShopItemForm } from "@/components/shop/ShopItemForm";
 import { useUsersNoPagination } from "@/hooks/use-users-no-pagination";
 import api from "@/lib/axios";
@@ -69,6 +79,7 @@ export default function ShopPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<ShopItem | undefined>();
+  const [itemToDelete, setItemToDelete] = useState<number | null>(null);
   const queryClient = useQueryClient();
 
   const { data: users } = useUsersNoPagination();
@@ -135,8 +146,12 @@ export default function ShopPage() {
       queryClient.invalidateQueries({ queryKey: ["items"] });
       toast.success("Article supprimé avec succès");
     },
-    onError: (error) => {
-      toast.error("Erreur lors de la suppression de l'article");
+    onError: (error: any) => {
+      console.error("Erreur lors de la suppression:", error);
+      toast.error(
+        error.response?.data?.message ||
+          "Une erreur est survenue lors de la suppression de l'article. Veuillez réessayer plus tard."
+      );
     },
   });
 
@@ -156,8 +171,13 @@ export default function ShopPage() {
   };
 
   const handleDelete = (id: number) => {
-    if (window.confirm("Êtes-vous sûr de vouloir supprimer cet article ?")) {
-      deleteMutation.mutate(id);
+    setItemToDelete(id);
+  };
+
+  const confirmDelete = () => {
+    if (itemToDelete) {
+      deleteMutation.mutate(itemToDelete);
+      setItemToDelete(null);
     }
   };
 
@@ -264,6 +284,7 @@ export default function ShopPage() {
                           variant="outline"
                           size="sm"
                           onClick={() => handleEdit(item)}
+                          disabled={item.clientId !== null}
                         >
                           Modifier
                         </Button>
@@ -271,6 +292,7 @@ export default function ShopPage() {
                           variant="destructive"
                           size="sm"
                           onClick={() => handleDelete(item.id)}
+                          disabled={item.clientId !== null}
                         >
                           Supprimer
                         </Button>
@@ -342,6 +364,30 @@ export default function ShopPage() {
         onSubmit={handleSubmit}
         fileUploadHook={fileUploadHook}
       />
+
+      <AlertDialog
+        open={itemToDelete !== null}
+        onOpenChange={(open) => !open && setItemToDelete(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Êtes-vous sûr ?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Cette action ne peut pas être annulée. Cet article sera
+              définitivement supprimé de la boutique.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Annuler</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDelete}
+              className="bg-destructive text-destructive-foreground text-white hover:bg-destructive/90"
+            >
+              Supprimer
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

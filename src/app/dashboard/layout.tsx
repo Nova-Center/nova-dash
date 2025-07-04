@@ -31,11 +31,6 @@ const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Actualités", href: "/dashboard/news", icon: Newspaper },
   { name: "Utilisateurs", href: "/dashboard/users", icon: Users },
-  {
-    name: "Signalements",
-    href: "/dashboard/reports",
-    icon: AlertTriangle,
-  },
   { name: "NovaPoints", href: "/dashboard/points", icon: Coins },
   { name: "Évènements", href: "/dashboard/events", icon: Calendar },
   { name: "Boutique", href: "/dashboard/shop", icon: ShoppingCart },

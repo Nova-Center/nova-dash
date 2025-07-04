@@ -2,6 +2,7 @@ import { create } from "zustand";
 import api from "@/lib/axios";
 import { User } from "@/types/user";
 import { AxiosError } from "axios";
+import { Role } from "@/types/user";
 
 interface Meta {
   total: number;
@@ -23,6 +24,15 @@ interface Meta {
 interface ApiResponse {
   meta: Meta;
   data: User[];
+}
+
+interface UsersStats {
+  totalUsers: number;
+  usersByRole: {
+    superadmin: number;
+    admin: number;
+    user: number;
+  };
 }
 
 interface UsersStore {
@@ -48,6 +58,7 @@ interface UsersStore {
   unbanUser: (userId: number) => Promise<void>;
   updateUser: (userId: number, data: Partial<User>) => Promise<void>;
   deleteUser: (userId: number) => Promise<void>;
+  fetchStats: () => Promise<UsersStats>;
 }
 
 export const useUsersStore = create<UsersStore>((set, get) => ({
@@ -172,5 +183,10 @@ export const useUsersStore = create<UsersStore>((set, get) => ({
       set({ error: errorMessage });
       throw error;
     }
+  },
+
+  fetchStats: async () => {
+    const response = await api.get<UsersStats>("/api/users/stats");
+    return response.data;
   },
 }));
