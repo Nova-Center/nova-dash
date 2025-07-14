@@ -22,6 +22,11 @@ export default function WebSocketProvider({
       },
     });
 
+    socket.emit("private:message", {
+      receiverId: 1,
+      content: "Hello!",
+    });
+
     socket.on("connect", () => {
       console.log("Connected to WebSocket");
     });

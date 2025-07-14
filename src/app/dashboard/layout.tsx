@@ -12,15 +12,12 @@ import ProtectedRoute from "@/components/auth/protected-route";
 import { SessionProvider } from "next-auth/react";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import {
-  LayoutDashboard,
   Users,
-  AlertTriangle,
   Coins,
   Calendar,
   ShoppingCart,
   HeartHandshake,
   File,
-  Settings,
   Newspaper,
 } from "lucide-react";
 import WebSocketProvider from "@/components/websocket-provider";
@@ -28,7 +25,6 @@ import WebSocketProvider from "@/components/websocket-provider";
 const queryClient = new QueryClient();
 
 const navigation = [
-  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Actualités", href: "/dashboard/news", icon: Newspaper },
   { name: "Utilisateurs", href: "/dashboard/users", icon: Users },
   { name: "NovaPoints", href: "/dashboard/points", icon: Coins },
@@ -36,7 +32,6 @@ const navigation = [
   { name: "Boutique", href: "/dashboard/shop", icon: ShoppingCart },
   { name: "Services", href: "/dashboard/services", icon: HeartHandshake },
   { name: "Posts", href: "/dashboard/posts", icon: File },
-  { name: "Paramètres", href: "/dashboard/settings", icon: Settings },
 ];
 
 export default function DashboardLayout({
