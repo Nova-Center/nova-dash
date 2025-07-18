@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  output: "standalone",
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -23,6 +24,10 @@ const nextConfig: NextConfig = {
       },
       {
         hostname: "images.unsplash.com",
+        protocol: "https",
+      },
+      {
+        hostname: "bucket-production-3fe3.up.railway.app",
         protocol: "https",
       },
     ],

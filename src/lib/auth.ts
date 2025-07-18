@@ -28,41 +28,56 @@ export const authOptions: AuthOptions = {
         email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials) {
+      async authorize(credentials, req) {
         if (!credentials?.email || !credentials?.password) {
           throw new Error("Email and password are required");
         }
 
         try {
-          const res = await api.post("/api/v1/auth/login", {
-            email: credentials.email,
-            password: credentials.password,
-          });
+          // Log the API URL in development
+          if (process.env.NODE_ENV === "development") {
+            console.log("API URL:", process.env.NEXT_PUBLIC_API_URL);
+          }
 
-          const userCredentials = res.data;
+          const res = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/login`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                email: credentials.email,
+                password: credentials.password,
+              }),
+            }
+          );
 
-          if (!userCredentials) {
+          const data = await res.json();
+
+          if (!res.ok) {
+            throw new Error(data.message || "Authentication failed");
+          }
+
+          if (!data) {
             throw new Error("No user data received");
           }
 
-          if (!userCredentials.token) {
+          if (!data.token) {
             throw new Error("Missing authentication token");
           }
 
-          if (
-            userCredentials.role !== "admin" &&
-            userCredentials.role !== "superadmin"
-          ) {
+          if (data.role !== "admin" && data.role !== "superadmin") {
             throw new Error(
               "You are not authorized to access this application"
             );
           }
 
           return {
-            id: String(userCredentials.id),
-            email: userCredentials.email,
-            username: userCredentials.username,
-            token: userCredentials.token,
+            id: String(data.id),
+            email: data.email,
+            username: data.username,
+            token: data.token,
           };
         } catch (error: any) {
           const errorMessage =
@@ -110,6 +125,7 @@ export const authOptions: AuthOptions = {
   },
   session: {
     strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   secret: process.env.NEXTAUTH_SECRET,
   debug: process.env.NODE_ENV === "development",
