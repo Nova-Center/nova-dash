@@ -43,14 +43,15 @@ interface Event {
 }
 
 interface Stats {
-  totalEvents: string;
-  averageParticipants: number;
-  mostPopularEvents: PopularEvent[];
-  eventsByMonth: Array<{
-    month: string;
-    count: number;
-  }>;
+  totalEvents: number;
   totalParticipants: number;
+  upcomingEvents: number;
+  averageParticipants: number;
+  mostPopularEvents: Array<{
+    id: number;
+    title: string;
+    participantCount: number;
+  }>;
 }
 
 const cardVariants: Variants = {
