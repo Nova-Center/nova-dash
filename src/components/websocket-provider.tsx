@@ -16,7 +16,7 @@ export default function WebSocketProvider({
 
     if (!userId) return;
 
-    const socket = io("http://localhost:3333", {
+    const socket = io(`${process.env.NEXT_PUBLIC_API_URL}:3333`, {
       auth: {
         userId,
       },

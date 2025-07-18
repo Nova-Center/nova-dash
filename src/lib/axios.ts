@@ -12,7 +12,23 @@ const api = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+  timeout: 10000,
+  proxy: false,
 });
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (process.env.NODE_ENV === "development") {
+      console.error("API Error:", {
+        message: error.message,
+        status: error.response?.status,
+        data: error.response?.data,
+      });
+    }
+    return Promise.reject(error);
+  }
+);
 
 api.interceptors.request.use(async (config) => {
   const session = await getSession();
