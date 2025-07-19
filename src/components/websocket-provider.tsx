@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { io } from "socket.io-client";
 import { useUserStore } from "@/store/user-store";
+import { toast } from "sonner";
 
 export default function WebSocketProvider({
   children,
@@ -16,19 +17,24 @@ export default function WebSocketProvider({
 
     if (!userId) return;
 
-    const socket = io(`${process.env.NEXT_PUBLIC_API_URL}:3333`, {
+    const socket = io(process.env.NEXT_PUBLIC_API_URL || "", {
       auth: {
         userId,
       },
-    });
-
-    socket.emit("private:message", {
-      receiverId: 1,
-      content: "Hello!",
+      transports: ["websocket", "polling"],
+      timeout: 10000,
+      reconnection: true,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 1000,
     });
 
     socket.on("connect", () => {
       console.log("Connected to WebSocket");
+    });
+
+    socket.on("connect_error", (error) => {
+      console.error("WebSocket connection error:", error);
+      toast.error("Failed to connect to real-time updates");
     });
 
     socket.on("disconnect", () => {
