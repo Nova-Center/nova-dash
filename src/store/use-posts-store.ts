@@ -115,7 +115,7 @@ export const usePostsStore = create<PostsState>((set, get) => ({
   },
   fetchStats: async () => {
     try {
-      const response = await api.get<PostsStats>("/api/posts/stats");
+      const response = await api.get<PostsStats>("/api/v1/posts/stats");
       return response.data;
     } catch (error) {
       const errorMessage =
