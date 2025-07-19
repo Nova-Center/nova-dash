@@ -129,7 +129,7 @@ export const useEventsStore = create<EventsState>((set, get) => ({
   },
 
   fetchStats: async () => {
-    const response = await api.get<EventStats>("/api/events/stats");
+    const response = await api.get<EventStats>("/api/v1/events/stats");
     return response.data;
   },
 }));

@@ -11,3 +11,13 @@ export const useUsers = () => {
     },
   });
 };
+
+export const useUsersNoPagination = () => {
+  return useQuery({
+    queryKey: ["users"],
+    queryFn: async () => {
+      const response = await api.get<User[]>("/api/v1/users/no-pagination");
+      return response.data;
+    },
+  });
+};

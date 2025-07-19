@@ -6,7 +6,7 @@ import {
   Comment as CommentType,
   Like,
 } from "@/store/use-posts-store";
-import { useUsers } from "@/hooks/use-users";
+import { useUsersNoPagination } from "@/hooks/use-users";
 import {
   Table,
   TableBody,
@@ -41,7 +41,7 @@ import {
   Image as ImageIcon,
 } from "lucide-react";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { TooltipDateTime } from "@/components/dashboard/tootlip-datetime";
 import Image from "next/image";
@@ -107,7 +107,7 @@ export default function PostsPage() {
     deleteLike,
   } = usePostsStore();
 
-  const usersQuery = useUsers();
+  const usersQuery = useUsersNoPagination();
   const queryClient = useQueryClient();
 
   const {
@@ -146,8 +146,8 @@ export default function PostsPage() {
 
   const getUserById = (userId: number | null) => {
     if (!userId) return null;
-    if (!usersQuery.data?.data) return null;
-    return usersQuery.data.data.find((user) => user.id === userId) || null;
+    if (!usersQuery.data) return null;
+    return usersQuery.data.find((user) => user.id === userId) || null;
   };
 
   const handleDeletePost = async (postId: number) => {

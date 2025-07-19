@@ -25,7 +25,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
-import { useUsers } from "@/hooks/use-users";
+import { useUsersNoPagination } from "@/hooks/use-users";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Tooltip,
@@ -72,7 +72,7 @@ const containerVariants = {
 export default function ServicesPage() {
   const { services, meta, isLoading, error, fetchServices, deleteService } =
     useServicesStore();
-  const { data: usersData } = useUsers();
+  const { data: usersData } = useUsersNoPagination();
   const [searchQuery, setSearchQuery] = useState("");
   const [deleteDialog, setDeleteDialog] = useState<{
     isOpen: boolean;
@@ -93,8 +93,8 @@ export default function ServicesPage() {
   }, [fetchServices]);
 
   const getUserById = (userId: number | null) => {
-    if (!userId || !usersData?.data) return null;
-    return usersData.data.find((user) => user.id === userId) || null;
+    if (!userId || !usersData) return null;
+    return usersData.find((user) => user.id === userId);
   };
 
   const filteredServices = services.filter(

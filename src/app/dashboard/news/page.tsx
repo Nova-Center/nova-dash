@@ -271,13 +271,6 @@ export default function NewsPage() {
                                     <Eye className="h-4 w-4" />
                                   </Button>
                                 </Link>
-                                <Link
-                                  href={`/dashboard/news/${article.id}/edit`}
-                                >
-                                  <Button variant="outline" size="sm">
-                                    <Edit className="h-4 w-4" />
-                                  </Button>
-                                </Link>
                                 <Button
                                   variant="outline"
                                   size="sm"
